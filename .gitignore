@@ -1,0 +1,10 @@
+*.iml
+**/*.class
+**/out
+**/dist
+*.odt
+*.class
+.idea
+.gradle
+build
+out
