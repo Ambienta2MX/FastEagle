@@ -18,11 +18,11 @@ class ValidatorSpec extends spock.lang.Specification {
         * Needed ones: "LATITUD","LONGITUD"
         * Desired: "LATITUD","LONGITUD","ALTITUD","NOMBRE_EDO","NOMBRE_MUN"
         * */
-        header                       | rowContent || result
-        ['']                         | ['']       || false
-        ['LATITUD', 'LONGITUD']      | ['0', '0'] || false
-        ['LATITUD', 'LONGITUD']      | ['0', '0'] || false
-        ['NOMBRE_EDO', 'NOMBRE_MUN'] | ['0', '0'] || false
+        rowContent                                                                                      || result
+        null                                                                                            || [valid: false]
+        ['LATITUD': 0, 'LONGITUD': 10]                                                                  || ['LATITUD': 0, 'LONGITUD': 10, 'valid': false]
+        ['LATITUD': 10, 'LONGITUD': 10, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco'] || ['LATITUD': 10, 'LONGITUD': -10, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true]
+        ['NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco']                                || ['NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
 
     }
 }
