@@ -1,16 +1,16 @@
-import com.ambienta2mx.fasteagle.CsvValidator
+import com.ambienta2mx.fasteagle.Validator
 import spock.lang.Shared
 
 /**
  * Created by alberto on 4/14/15.
  */
-class CsvParserSpec extends spock.lang.Specification {
+class ValidatorSpec extends spock.lang.Specification {
     @Shared
-    CsvValidator parser = new CsvValidator()
+    Validator validator = new Validator()
 
     def "should validate the content of a row inside a csv file"() {
         expect:
-        parser.validate(rowContent) == result
+        validator.validate(rowContent) == result
         where:
         /*
         * Let's consider the next headers
