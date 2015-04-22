@@ -1,11 +1,10 @@
 import com.ambienta2mx.fasteagle.Validator
-import spock.lang.Shared
 
 /**
  * Created by alberto on 4/14/15.
  */
 class ValidatorSpec extends spock.lang.Specification {
-    @Shared
+
     Validator validator = new Validator()
 
     def "should validate the content of a row inside a csv file"() {
