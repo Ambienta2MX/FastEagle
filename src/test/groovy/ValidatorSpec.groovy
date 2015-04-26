@@ -22,7 +22,7 @@ class ValidatorSpec extends spock.lang.Specification {
         ['LATITUD': 0, 'LONGITUD': 10]                                                                  || null
         ['LATITUD': "", 'LONGITUD': ""]                                                                 || null
         ['LATITUD': 10, 'LONGITUD': 10, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco'] || ['LATITUD': 10, 'LONGITUD': -10, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true]
-        ['NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco']                                || ['NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
+        ['NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco']                                || ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
 
     }
 

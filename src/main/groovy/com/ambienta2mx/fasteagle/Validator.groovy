@@ -14,8 +14,12 @@ class Validator {
     def final double minAltitude = -86.733333
 
     def validateRow(def content) {
-        content.LATITUD = (Integer.parseInt("${content.LATITUD ?: 0}"))
-        content.LONGITUD = (-Integer.parseInt("${content.LONGITUD ?: 0}"))
+        if(!content){
+            return null
+        }
+        //
+        content?.LATITUD = (Integer.parseInt("${content.LATITUD ?: 0}"))
+        content?.LONGITUD = (-Integer.parseInt("${content.LONGITUD ?: 0}"))
         //
         if (content.LATITUD && content.LONGITUD) {
             content.valid = true
