@@ -1,21 +1,23 @@
 package com.ambienta2mx.fasteagle
 
+import static com.xlson.groovycsv.CsvParser.parseCsv
+
 /**
  * Created by alberto on 4/14/15.
  */
 class Validator {
     // Most left point, near Tijuana
-    def final Double maxLongitude = -117.083333
-    def final Double maxAltitude = 32.533333
+    def final double maxLongitude = -117.083333
+    def final double maxAltitude = 32.533333
     // Most right point, near Cancun
-    def final Double minLongitude = 21.133333
-    def final Double minAltitude = -86.733333
+    def final double minLongitude = 21.133333
+    def final double minAltitude = -86.733333
 
-    def validate(def content) {
-
-        if (content?.LATITUD && content?.LONGITUD) {
-            content.LATITUD = Double.parseDouble("$content.LATITUD")
-            content.LONGITUD = -Double.parseDouble("$content.LONGITUD")
+    def validateRow(def content) {
+        content.LATITUD = (Integer.parseInt("${content.LATITUD ?: 0}"))
+        content.LONGITUD = (-Integer.parseInt("${content.LONGITUD ?: 0}"))
+        //
+        if (content.LATITUD && content.LONGITUD) {
             content.valid = true
             return content
         }
@@ -24,18 +26,24 @@ class Validator {
             content.solve = true
             return content
         } else {
-            content = content ?: [:]
-            content?.valid = false
-            return content
+            null
         }
     }
+
+    def validateFile(def path) {
+        def csv = new File(path).text
+        def data = parseCsv(csv, autoDetect: true)
+        def validated = []
+        for (line in data) {
+            def csvMap = [:]
+            line.columns.each { key, index ->
+                csvMap["$key"] = line.values[index]
+            }
+            def row = validateRow(csvMap)
+            if (row) {
+                validated.add(row)
+            }
+        }
+        return validated
+    }
 }
-/*
-* if (content.NOMBRE_EDO && content.NOMBRE_MUN) {
-                content.valid = true
-                content.solve = true
-                return content
-            } else {
-                content.valid = false
-                return content
-            }*/
