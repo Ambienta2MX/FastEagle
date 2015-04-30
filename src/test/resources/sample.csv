@@ -1,0 +1,4 @@
+"CLAVE","CVE_GEOEST","CVE_AGEB","LATITUD","LONGITUD","ALTITUD","CARTA_TOPO","TIPO","NOMBRE_EDO","NOMBRE_MUN"
+"1","010010001","022-9","215251","1021746","1870","F13D19","U","Aguascalientes","Aguascalientes"
+"2","010010063","004-0","0","0","1870","F13B89","R","Aguascalientes","Aguascalientes"
+"3","010010063","004-0","0","0","1870","F13B89","R","",""

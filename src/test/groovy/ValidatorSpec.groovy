@@ -39,7 +39,7 @@ class ValidatorSpec extends spock.lang.Specification {
                  "LONGITUD"  : -1021746,
                  "ALTITUD"   : "1870",
                  "CARTA_TOPO": "F13D19",
-                 "TIPO"      : "U",
+                  "TIPO"      : "U",
                  "NOMBRE_EDO": "Aguascalientes",
                  "NOMBRE_MUN": "Aguascalientes",
                  "valid"     : true],
