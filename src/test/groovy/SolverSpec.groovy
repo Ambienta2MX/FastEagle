@@ -10,7 +10,8 @@ class SolverSpec extends spock.lang.Specification {
         expect:
         solver.findSuitablePlace(place) == result
         where:
-        place                                                                                                                       || result
+        place                                                                      || result
+        ['LATITUD': '191658', 'LONGITUD': '0991716', 'valid': true, 'solve': true] || ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
         ['LATITUD': '191658', 'LONGITUD': '0991716', 'valid': true, 'solve': true] || ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
     }
 
