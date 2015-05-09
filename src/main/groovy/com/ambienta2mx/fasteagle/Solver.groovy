@@ -7,13 +7,12 @@ import groovyx.net.http.HTTPBuilder
  */
 class Solver {
     def http
-    def findSuitablePlace(def place) {
+    def solvePlaceByName(def place) {
         http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
-        def latitude = place.latitud/10000 +
 
     }
 
-    def getGeographicCoordinates(def place) {
-        http  = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/')
+    def solvePlaceByLatLon(def latitude, def longitude) {
+        http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
     }
 }

@@ -6,20 +6,20 @@ import com.ambienta2mx.fasteagle.Solver
 class SolverSpec extends spock.lang.Specification {
     Solver solver = new Solver()
 
-    def "Should solve a location"() {
+    def "Should solve a location via Lat/Lon"() {
         expect:
-        solver.findSuitablePlace(place) == result
+        solver.solvePlaceByLatLon(latitude, longitude) == result
         where:
-        place                                                                      || result
-        ['LATITUD': '191658', 'LONGITUD': '0991716', 'valid': true, 'solve': true] || ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
-        ['LATITUD': '191658', 'LONGITUD': '0991716', 'valid': true, 'solve': true] || ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
+        latitude   | longitude || result
+        -99.186510 | 19.504434 || [fullName: 'Distrito Federal, Azcapotzalco, San Pablo Xalpa']
     }
 
-    def "Should get itrf/nad27 coordinates"() {
+    def "Should solve a location via Place"() {
         expect:
-        solver.getGeographicCoordinates(place) == result
+        solver.solvePlaceByName(place) == result
         where:
-        place                                                                                                                       || result
-        ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true] || ['LATITUD': 0, 'LONGITUD': 0, 'NOMBRE_EDO': 'Distrito Federal', 'NOMBRE_MUN': 'Azcapotzalco', 'valid': true, 'solve': true]
+        place                                                           || result
+        ['fullName': 'Distrito Federal, Azcapotzalco, San Pablo Xalpa'] || ['coordinates': [-99.186510, 19.504434]]
+        ['fullName': 'Distrito Federal, Gustavo A. Madero, Lindavista'] || ['coordinates': [-99.146569, 19.504664]]
     }
 }
