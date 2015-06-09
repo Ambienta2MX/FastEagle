@@ -1,4 +1,4 @@
-package com.ambienta2mx.fasteagle
+package com.ambienta2mx.fasteagle.model
 
 /**
  * Created by alberto on 4/16/15.

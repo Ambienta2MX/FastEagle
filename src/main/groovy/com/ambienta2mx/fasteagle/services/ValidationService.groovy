@@ -1,11 +1,11 @@
-package com.ambienta2mx.fasteagle
+package com.ambienta2mx.fasteagle.services
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
 /**
  * Created by alberto on 4/14/15.
  */
-class Validator {
+class ValidationService {
     // Most left point, near Tijuana
     def final double maxLongitude = -117.083333
     def final double maxAltitude = 32.533333
