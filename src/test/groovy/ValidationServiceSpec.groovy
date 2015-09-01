@@ -1,11 +1,11 @@
-import com.ambienta2mx.fasteagle.Validator
+import com.ambienta2mx.fasteagle.services.ValidationService
 
 /**
  * Created by alberto on 4/14/15.
  */
-class ValidatorSpec extends spock.lang.Specification {
+class ValidationServiceSpec extends spock.lang.Specification {
 
-    Validator validator = new Validator()
+    ValidationService validator = new ValidationService()
 
     def "should validate the content of a row inside a csv file"() {
         expect:

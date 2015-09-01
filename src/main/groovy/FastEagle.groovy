@@ -7,7 +7,7 @@ import groovy.util.logging.Log
  */
 @Log
 class FastEagle {
-  def main(def args){
+  def static main(def args){
     log.error("OK")
   }
 }

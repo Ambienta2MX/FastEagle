@@ -1,10 +1,10 @@
-import com.ambienta2mx.fasteagle.Solver
+import com.ambienta2mx.fasteagle.services.LocationService
 
 /**
  * Created by alberto on 4/25/15.
  */
-class SolverSpec extends spock.lang.Specification {
-    Solver solver = new Solver()
+class LocationServiceSpec extends spock.lang.Specification {
+    LocationService solver = new LocationService()
 
     def "Should solve a location via Lat/Lon"() {
         expect:

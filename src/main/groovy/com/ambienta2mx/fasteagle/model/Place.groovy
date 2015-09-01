@@ -1,8 +1,11 @@
 package com.ambienta2mx.fasteagle.model
 
+import groovy.transform.Canonical
+
 /**
  * Created by alberto on 4/16/15.
  */
+@Canonical
 class Place {
     def location //GEOJson Spec
     List sexagesimal_coordinates
