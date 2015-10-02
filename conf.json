@@ -1,0 +1,26 @@
+{
+  "mongo": {
+    "address": "Ambienta2MX.FastEagle.EventBus.places",
+    "host": "127.0.0.1",
+    "pool_size": 17,
+    "db_name": "Ambienta2MX-Places",
+    "instances": 10
+  },
+  "queryVerticle": {
+    "http": {
+      "port": 7777,
+      "host": "0.0.0.0"
+    },
+    "instances": 10
+  },
+  "googleMapsVerticle": {
+    "http": {
+      "port": 7777,
+      "host": "0.0.0.0"
+    },
+    "instances": 10
+  },
+  "GoogleMapsConfiguration": {
+    "key":""
+  }
+}
