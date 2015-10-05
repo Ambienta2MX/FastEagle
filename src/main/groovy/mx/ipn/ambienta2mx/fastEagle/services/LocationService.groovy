@@ -2,6 +2,7 @@ package mx.ipn.ambienta2mx.fastEagle.services
 
 import groovyx.net.http.HTTPBuilder
 import mx.ipn.ambienta2mx.fastEagle.model.Place
+import org.vertx.groovy.core.Vertx
 
 /**
  * Created by alberto on 4/16/15.
@@ -14,23 +15,43 @@ class LocationService {
         this.currentKey = googleApiKey
     }
 
-    def solvePlaceByName(def address) {
-        http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
+    Map solvePlaceByLatLon(def latitude, def longitude) {
         Place place = new Place()
-        http.get(path: "json", query: [address: "address", key: "$currentKey"]) { resp, json ->
-            println resp.status
-            println "results: "
-            println json.results[-2].formatted_address
+        http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
+        Map jsonResponse = [:]
+
+        http.get(path: "json", query: [latlng: "$latitude,$longitude", key: "$currentKey", "language": "es"]) { resp, json ->
+            jsonResponse = json
+            // Avoiding a null response
+            if (jsonResponse.results) {
+                // Parsing the Json information from google
+                def location = jsonResponse.results[0].geometry.location
+                List coordinates = [location.lng, location.lat]
+                def addressComponents = jsonResponse.results[0].address_components
+                // Retrieving just information from Mexico
+                if (jsonResponse.results[-1].address_components[0].short_name == "MX") {
+                    place.itrf_coordinates = coordinates
+                    place.nad27_coordinates = coordinates
+                    place.location = [coordinates: [coordinates], type: "Point"]
+                    place.sexagesimal_coordinates = [] // Just INEGI Sources contains this information
+
+                    place.zipCode = addressComponents.find { element -> "postal_code" in element.types }.long_name ?: ""
+                    place.state = addressComponents.find { element -> "administrative_area_level_1" in element.types }.long_name ?: ""
+                    place.city = addressComponents.find { element -> "administrative_area_level_3" in element.types }.long_name ?: ""
+                    place.town = addressComponents.find { element -> "sublocality" in element.types }.long_name ?: ""
+                    place.fullName = "$place.state, $place.city, $place.town"
+                }
+            }
         }
+        return place.properties
     }
 
-    def solvePlaceByLatLon(def latitude, def longitude) {
+    Map solvePlaceByName(def address) {
         http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
         Place place = new Place()
-        http.get(path: "json", query: [latlng: "$latitude,$longitude", key: "$currentKey"]) { resp, json ->
-            println resp.status
-            println "results: "
-            println json.results[-2].formatted_address
+        http.get(path: "json", query: [address: "$address", key: "$currentKey"]) { resp, json ->
+
         }
+        return place.properties
     }
 }
