@@ -1,6 +1,6 @@
 package mx.ipn.ambienta2mx.fastEagle
 
-import mx.ipn.ambienta2mx.fastEagle.web.GoogleMapsVerticle
+import mx.ipn.ambienta2mx.fastEagle.web.LocationVerticle
 import mx.ipn.ambienta2mx.fastEagle.web.QueryVerticle
 import org.vertx.groovy.platform.Verticle
 
@@ -13,6 +13,6 @@ class FastEagleVerticle extends Verticle {
         // Mongo Query Verticle
         container.deployVerticle("groovy:" + QueryVerticle.class.getCanonicalName(), definedConfiguration)
         // Google Maps Solver verticle
-        container.deployVerticle("groovy:" + GoogleMapsVerticle.class.getCanonicalName(), definedConfiguration)
+        container.deployVerticle("groovy:" + LocationVerticle.class.getCanonicalName(), definedConfiguration)
     }
 }
