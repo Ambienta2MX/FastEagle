@@ -35,7 +35,16 @@ class QueryVerticle extends Verticle {
             ]
             eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
                 request.response.putHeader("Content-Type", "application/json")
-                request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
+                if (mongoResponse.body.results) {
+                    request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
+                } else { // No results, trying to resolve the information via google maps
+                    container.logger.info("Not found!")
+                    container.logger.info("Sending information to location verticle!")
+                    eventBus.send("$definedConfiguration.location.address", [method: 'latlng', coordinates: coordinates]) { message ->
+                        request.response.end "${JsonOutput.toJson(message.body)}"
+                    }
+                }
+
             }
         }
         server.requestHandler(routeMatcher.asClosure()).listen(definedConfiguration.queryVerticle.http.port, definedConfiguration.queryVerticle.http.host);

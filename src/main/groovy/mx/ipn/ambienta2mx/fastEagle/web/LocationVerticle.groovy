@@ -16,21 +16,21 @@ class LocationVerticle extends Verticle {
     def start() {
         definedConfiguration = container.getConfig()
         locationService.currentKey = definedConfiguration.GoogleMapsConfiguration.key
-        container.logger.print("GoogleMapsVerticle has started")
+        container.logger.info("GoogleMapsVerticle has started")
         eventBus = vertx.eventBus
-        eventBus.registerHandler("$definedConfiguration.locationVerticle.address") { message ->
-            container.logger.debug(message.body);
+        eventBus.registerHandler("$definedConfiguration.location.address") { message ->
+            container.logger.debug("New message received : " + message.body);
             def mongoOperation = [action: 'save', collection: 'Places']
-            Place place
+            Map place
             if (message.body.method == 'latlng') { // solve location by lat/lng
-                place = locationService.solvePlaceByLatLon(message.body[0], message.body[1])
+                place = locationService.solvePlaceByLatLon(message.body.coordinates[0], message.body.coordinates[1])
             } else { // solve location by place
                 place = locationService.solvePlaceByName(message.body)
             }
-            mongoOperation.document = place.properties
+            mongoOperation.document = place
             eventBus.send("$definedConfiguration.mongo.address", mongoOperation) { result ->
-                if (result.status) {
-                    message.reply(place.properties)
+                if (result) {
+                    message.reply(mongoOperation.document)
                 } else {
                     message.reply([])
                 }
