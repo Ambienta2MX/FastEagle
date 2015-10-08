@@ -15,11 +15,10 @@ class LocationService {
         this.currentKey = googleApiKey
     }
 
-    Map solvePlaceByLatLon(def latitude, def longitude) {
+    Map solvePlaceByLatLon(def longitude, def latitude) {
         Place place = new Place()
         http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
         Map jsonResponse = [:]
-
         http.get(path: "json", query: [latlng: "$latitude,$longitude", key: "$currentKey", "language": "es"]) { resp, json ->
             jsonResponse = json
             // Avoiding a null response
@@ -32,7 +31,7 @@ class LocationService {
                 if (jsonResponse.results[-1].address_components[0].short_name == "MX") {
                     place.itrf_coordinates = coordinates
                     place.nad27_coordinates = coordinates
-                    place.location = [coordinates: [coordinates], type: "Point"]
+                    place.location = [coordinates: coordinates, type: "Point"]
                     place.sexagesimal_coordinates = [] // Just INEGI Sources contains this information
 
                     place.zipCode = addressComponents.find { element -> "postal_code" in element.types }.long_name ?: ""
@@ -43,7 +42,13 @@ class LocationService {
                 }
             }
         }
-        return place.properties
+        return place.properties.findAll { property ->
+            if (!(property.key in ["metaClass", "class"])) {
+                return true
+            } else {
+                return false
+            }
+        }
     }
 
     Map solvePlaceByName(def address) {
