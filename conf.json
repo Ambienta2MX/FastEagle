@@ -13,14 +13,11 @@
     },
     "instances": 10
   },
-  "googleMapsVerticle": {
-    "http": {
-      "port": 7777,
-      "host": "0.0.0.0"
-    },
+  "location": {
+    "address": "Ambienta2MX.FastEagle.EventBus.Location",
     "instances": 10
   },
   "GoogleMapsConfiguration": {
-    "key":""
+    "key":"AIzaSyCo72iVxPewCLtXKmoeiWSyNAAVTqIiVvs"
   }
 }
