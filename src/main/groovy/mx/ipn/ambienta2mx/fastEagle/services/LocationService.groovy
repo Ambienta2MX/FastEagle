@@ -40,6 +40,11 @@ class LocationService {
                 }
             }
         }
+        place.dateCreated = new Date()
+        place.lastUpdated = new Date()
+        place.extraInfo = "Solved using Google Maps geocode service."
+        // TODO Solve place height
+        place.provider = "Google Maps"
         return place.properties.findAll { property ->
             if (!(property.key in ["metaClass", "class"])) {
                 return true
