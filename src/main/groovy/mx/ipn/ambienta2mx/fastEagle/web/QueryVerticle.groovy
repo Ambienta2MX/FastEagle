@@ -1,6 +1,7 @@
 package mx.ipn.ambienta2mx.fastEagle.web
 
 import groovy.json.JsonOutput
+import mx.ipn.ambienta2mx.fastEagle.web.RouteClosures.RoutesDefinition
 import org.vertx.groovy.core.http.RouteMatcher
 import org.vertx.groovy.platform.Verticle
 
@@ -12,41 +13,21 @@ class QueryVerticle extends Verticle {
     def eventBus
     def server
     def routeMatcher
+    RoutesDefinition routes = new RoutesDefinition()
 
     def start() {
         definedConfiguration = container.getConfig()
         eventBus = vertx.eventBus
         server = vertx.createHttpServer()
         routeMatcher = new RouteMatcher()
-        //
-        routeMatcher.get("/places/:latitude/:longitude/:maxDistance") { request ->
-            def coordinates = [Double.parseDouble(request.params.latitude ?: 0), Double.parseDouble(request.params.longitude ?: 0)]
-            def maxDistance = Double.parseDouble(request.params.maxDistance ?: 100)
-            def query = [
-                    action : 'find', collection: 'Places',
-                    matcher: [
-                            location: [
-                                    '$near': [
-                                            '$geometry'   : [type: "Point", coordinates: coordinates],
-                                            '$maxDistance': maxDistance
-                                    ]
-                            ]
-                    ]
-            ]
-            eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
-                request.response.putHeader("Content-Type", "application/json")
-                if (mongoResponse.body.results) {
-                    request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
-                } else { // No results, trying to resolve the information via google maps
-                    container.logger.info("Not found!")
-                    container.logger.info("Sending information to location verticle!")
-                    eventBus.send("$definedConfiguration.location.address", [method: 'latlng', coordinates: coordinates]) { message ->
-                        request.response.end "${JsonOutput.toJson(message.body)}"
-                    }
-                }
 
-            }
-        }
+        routes.definedConfiguration = this.definedConfiguration
+        routes.eventBus = vertx.eventBus
+        routes.container = this.container
+
+        //
+        routeMatcher.get("/places/:latitude/:longitude/:maxDistance", routes.byLatLon)
+        routeMatcher.get("/places/", routes.byName)
         server.requestHandler(routeMatcher.asClosure()).listen(definedConfiguration.queryVerticle.http.port, definedConfiguration.queryVerticle.http.host);
     }
 
