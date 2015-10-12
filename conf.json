@@ -19,5 +19,6 @@
   },
   "GoogleMapsConfiguration": {
     "key":"AIzaSyCo72iVxPewCLtXKmoeiWSyNAAVTqIiVvs"
-  }
+  },
+  "auto-redeploy": true
 }
