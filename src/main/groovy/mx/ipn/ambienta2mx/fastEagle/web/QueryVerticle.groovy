@@ -26,7 +26,7 @@ class QueryVerticle extends Verticle {
         routes.container = this.container
 
         //
-        routeMatcher.get("/places/:latitude/:longitude/:maxDistance", routes.byLatLon)
+        routeMatcher.get("/places/:longitude/:latitude/:maxDistance", routes.byLatLon)
         routeMatcher.get("/places/", routes.byName)
         server.requestHandler(routeMatcher.asClosure()).listen(definedConfiguration.queryVerticle.http.port, definedConfiguration.queryVerticle.http.host);
     }
