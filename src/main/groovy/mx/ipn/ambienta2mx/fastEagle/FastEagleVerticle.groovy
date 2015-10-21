@@ -15,4 +15,8 @@ class FastEagleVerticle extends Verticle {
         // Google Maps Solver verticle
         container.deployVerticle("groovy:" + LocationVerticle.class.getCanonicalName(), definedConfiguration)
     }
+
+    def stop() {
+        container.logger.info("Fast Eagle main verticle has stopped!");
+    }
 }
