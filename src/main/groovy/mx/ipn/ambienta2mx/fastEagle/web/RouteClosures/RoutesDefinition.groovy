@@ -10,9 +10,10 @@ class RoutesDefinition {
     def container
     def eventBus
 
-    def byLatLon = { request ->
+    def findPlacesByLatLon = { request ->
         def coordinates = [Double.parseDouble(request.params.longitude ?: 0), Double.parseDouble(request.params.latitude ?: 0)]
-        def maxDistance = Double.parseDouble(request.params.maxDistance ?: 100)
+        def maxDistance = Double.parseDouble(request.params.distance ?: 100)
+        def maxItems = Integer.parseInt(request.params.max ?: "10")
         def query = [
                 action : 'find', collection: 'Places',
                 matcher: [
@@ -22,7 +23,8 @@ class RoutesDefinition {
                                         '$maxDistance': maxDistance
                                 ]
                         ]
-                ]
+                ],
+                limit: maxItems
         ]
         eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
             request.response.putHeader("Content-Type", "application/json")
@@ -39,15 +41,17 @@ class RoutesDefinition {
     } as groovy.lang.Closure
 
 
-    def byName = { request ->
+    def findPlacesByName = { request ->
         def name = request.params.name
+        def maxItems = Integer.parseInt(request.params.max ?: "10")
         def query = [
                 action : 'find', collection: 'Places',
                 matcher: [
                         fullName: [
                                 '$regex': name
                         ]
-                ]
+                ],
+                limit: maxItems
         ]
         eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
             request.response.putHeader("Content-Type", "application/json")
@@ -59,6 +63,14 @@ class RoutesDefinition {
                     request.response.end "${JsonOutput.toJson(documents)}"
                 }
             }
+        }
+    } as groovy.lang.Closure
+
+    def findPlacesBy = { request ->
+        if(request.params.name) {
+            return this.findPlacesByName(request)
+        } else {
+            return this.findPlacesByLatLon(request)
         }
     } as groovy.lang.Closure
 }
