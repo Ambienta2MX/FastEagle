@@ -1,6 +1,5 @@
 package mx.ipn.ambienta2mx.fastEagle.web
 
-import groovy.json.JsonOutput
 import mx.ipn.ambienta2mx.fastEagle.web.RouteClosures.RoutesDefinition
 import org.vertx.groovy.core.http.RouteMatcher
 import org.vertx.groovy.platform.Verticle
@@ -26,8 +25,7 @@ class QueryVerticle extends Verticle {
         routes.container = this.container
 
         //
-        routeMatcher.get("/places/:longitude/:latitude/:maxDistance", routes.byLatLon)
-        routeMatcher.get("/places/", routes.byName)
+        routeMatcher.get("/places", routes.findPlacesBy)
         server.requestHandler(routeMatcher.asClosure()).listen(definedConfiguration.queryVerticle.http.port, definedConfiguration.queryVerticle.http.host);
     }
 
