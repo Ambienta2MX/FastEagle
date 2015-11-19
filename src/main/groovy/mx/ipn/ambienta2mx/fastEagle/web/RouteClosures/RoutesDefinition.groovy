@@ -27,7 +27,6 @@ class RoutesDefinition {
                 limit: maxItems
         ]
         eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
-            request.response.putHeader("Content-Type", "application/json")
             if (mongoResponse.body.results) {
                 request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
             } else { // No results, trying to resolve the information via google maps
@@ -54,7 +53,6 @@ class RoutesDefinition {
                 limit: maxItems
         ]
         eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
-            request.response.putHeader("Content-Type", "application/json")
             if (mongoResponse.body.results) {
                 request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
             } else { // No results, trying to resolve the information via google maps
@@ -67,10 +65,23 @@ class RoutesDefinition {
     } as groovy.lang.Closure
 
     def findPlacesBy = { request ->
-        if(request.params.name) {
-            return this.findPlacesByName(request)
-        } else {
-            return this.findPlacesByLatLon(request)
+        /*Enabling CORS*/
+        request.response.putHeader("Access-Control-Allow-Origin", "${request.headers.origin}")
+        request.response.putHeader("Access-Control-Allow-Methods", "GET, OPTIONS, POST");
+        request.response.putHeader("Access-Control-Allow-Headers", "Content-Type, X-Requested-With, Accept");
+        request.response.putHeader("Content-Type", "application/json")
+        def response
+        try {
+            if(request.params.name) {
+                response = this.findPlacesByName(request)
+            } else {
+                response =  this.findPlacesByLatLon(request)
+            }
+            return response
+        } catch (Exception e) {
+            println(e.getMessage())
+            println(e.getLocalizedMessage());
+            return request.response.end("{'error' : ${e.getLocalizedMessage()}")
         }
     } as groovy.lang.Closure
 }

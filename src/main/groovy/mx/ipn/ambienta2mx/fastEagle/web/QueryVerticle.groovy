@@ -25,7 +25,7 @@ class QueryVerticle extends Verticle {
         routes.container = this.container
 
         //
-        routeMatcher.get("/places", routes.findPlacesBy)
+        routeMatcher.all("/places", routes.findPlacesBy)
         server.requestHandler(routeMatcher.asClosure()).listen(definedConfiguration.queryVerticle.http.port, definedConfiguration.queryVerticle.http.host);
     }
 
