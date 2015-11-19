@@ -2,9 +2,10 @@
   "mongo": {
     "address": "Ambienta2MX.FastEagle.EventBus.places",
     "host": "127.0.0.1",
-    "pool_size": 17,
+    "pool_size": 4,
     "db_name": "Ambienta2MX-Places",
-    "instances": 2
+    "instances": 2,
+    "use_mongo_types": true
   },
   "queryVerticle": {
     "http": {
