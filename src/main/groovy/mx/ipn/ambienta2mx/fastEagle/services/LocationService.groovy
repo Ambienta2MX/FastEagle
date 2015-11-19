@@ -2,7 +2,8 @@ package mx.ipn.ambienta2mx.fastEagle.services
 
 import groovyx.net.http.HTTPBuilder
 import mx.ipn.ambienta2mx.fastEagle.model.Place
-import org.vertx.groovy.core.Vertx
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 /**
  * Created by alberto on 4/16/15.
@@ -10,13 +11,13 @@ import org.vertx.groovy.core.Vertx
 class LocationService {
     def http
     def currentKey
-
+    DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
     LocationService(String googleApiKey) {
         this.currentKey = googleApiKey
     }
 
     Map solvePlaceByLatLon(def longitude, def latitude) {
-        Place place = new Place()
+        def place = [:]
         http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
         http.get(path: "json", query: [latlng: "$latitude,$longitude", key: "$currentKey", "language": "es"]) { resp, json ->
             // Avoiding a null response
@@ -40,23 +41,17 @@ class LocationService {
                 }
             }
         }
-        place.dateCreated = new Date()
-        place.lastUpdated = new Date()
+        place.dateCreated = format.format(new Date())
+        place.lastUpdated = format.format(new Date())
         place.extraInfo = ["Solved using Google Maps geocode service."]
         // TODO Solve place height
         place.provider = ["Google Maps"]
-        return place.properties.findAll { property ->
-            if (!(property.key in ["metaClass", "class"])) {
-                return true
-            } else {
-                return false
-            }
-        }
+        return place
     }
 
     Map solvePlaceByName(def address) {
         http = new HTTPBuilder('https://maps.googleapis.com/maps/api/geocode/');
-        Place place = new Place()
+        def place = [:]
         http.get(path: "json", query: [address: "$address", key: "$currentKey"]) { resp, json ->
             // Avoiding a null response
             if (json.results) {
@@ -79,18 +74,12 @@ class LocationService {
                 }
             }
         }
-        //place.dateCreated = new Date()
-        //place.lastUpdated = new Date()
+        place.dateCreated = new Date().toString()
+        place.lastUpdated = new Date().toString()
         place.extraInfo = ["Solved using Google Maps geocode service."]
         // TODO Solve place height
         place.provider = ["Google Maps"]
 
-        return place.properties.findAll { property ->
-            if (!(property.key in ["metaClass", "class"])) {
-                return true
-            } else {
-                return false
-            }
-        }
+        return place
     }
 }
