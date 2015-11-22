@@ -59,6 +59,7 @@ dependencies {
   // GPars
   compile 'org.codehaus.gpars:gpars:1.2.1'
   // We use the awesome Spock testing and specification framework
+  compile("org.ccil.cowan.tagsoup:tagsoup:1.2.1")
   testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
 }
 
