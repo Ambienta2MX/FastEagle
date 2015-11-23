@@ -11,8 +11,8 @@ class RoutesDefinition {
     def eventBus
 
     def findPlacesByLatLon = { request ->
-        def coordinates = [Double.parseDouble(request.params.longitude ?: 0), Double.parseDouble(request.params.latitude ?: 0)]
-        def maxDistance = Double.parseDouble(request.params.distance ?: 100)
+        def coordinates = [Double.parseDouble(request.params.longitude ?: "0"), Double.parseDouble(request.params.latitude ?: "0")]
+        def maxDistance = Double.parseDouble(request.params.distance ?: "100")
         def maxItems = Integer.parseInt(request.params.max ?: "10")
         def query = [
                 action : 'find', collection: 'Places',
@@ -24,15 +24,24 @@ class RoutesDefinition {
                                 ]
                         ]
                 ],
-                limit: maxItems
+                limit  : maxItems
         ]
         eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
             if (mongoResponse.body.results) {
+                println "Response from findPlacesByLatLng"
                 request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
             } else { // No results, trying to resolve the information via google maps
                 eventBus.send("$definedConfiguration.location.address", [method: 'latlng', coordinates: coordinates]) { message ->
-                    def documents = [message.body]
-                    request.response.end "${JsonOutput.toJson(documents)}"
+                    def id = message.body._id
+                    def queryid = [
+                            action : 'find', collection: 'Places',
+                            matcher: [
+                                    "_id": id
+                            ]
+                    ]
+                    eventBus.send("$definedConfiguration.mongo.address", queryid) { idResponse ->
+                        request.response.end "${JsonOutput.toJson(idResponse.body.results)}"
+                    }
                 }
             }
 
@@ -50,15 +59,24 @@ class RoutesDefinition {
                                 '$regex': name
                         ]
                 ],
-                limit: maxItems
+                limit  : maxItems
         ]
         eventBus.send("$definedConfiguration.mongo.address", query) { mongoResponse ->
             if (mongoResponse.body.results) {
+                println "Response from findPlacesByName"
                 request.response.end "${JsonOutput.toJson(mongoResponse.body.results)}"
             } else { // No results, trying to resolve the information via google maps
                 eventBus.send("$definedConfiguration.location.address", [method: 'name', name: name]) { message ->
-                    def documents = [message.body]
-                    request.response.end "${JsonOutput.toJson(documents)}"
+                    def id = message.body._id
+                    def queryid = [
+                            action : 'find', collection: 'Places',
+                            matcher: [
+                                    "_id": id
+                            ]
+                    ]
+                    eventBus.send("$definedConfiguration.mongo.address", queryid) { idResponse ->
+                        request.response.end "${JsonOutput.toJson(idResponse.body.results)}"
+                    }
                 }
             }
         }
@@ -72,13 +90,14 @@ class RoutesDefinition {
         request.response.putHeader("Content-Type", "application/json")
         def response
         try {
-            if(request.params.name) {
+            if (request.params.name) {
                 response = this.findPlacesByName(request)
             } else {
-                response =  this.findPlacesByLatLon(request)
+                response = this.findPlacesByLatLon(request)
             }
             return response
         } catch (Exception e) {
+            e.printStackTrace()
             println(e.getMessage())
             println(e.getLocalizedMessage());
             return request.response.end("{'error' : ${e.getLocalizedMessage()}")
