@@ -1,3 +1,5 @@
+package mx.ipn.ambienta2mx.fastEagle
+
 import mx.ipn.ambienta2mx.fastEagle.services.LocationService
 
 /**
