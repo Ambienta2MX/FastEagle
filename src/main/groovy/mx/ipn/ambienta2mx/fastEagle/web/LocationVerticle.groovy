@@ -28,7 +28,7 @@ class LocationVerticle extends Verticle {
             mongoOperation.document = place
             eventBus.send("$definedConfiguration.mongo.address", mongoOperation) { result ->
                 if (result) {
-                    message.reply(mongoOperation.document)
+                    message.reply(result.body)
                 } else {
                     message.reply([])
                 }

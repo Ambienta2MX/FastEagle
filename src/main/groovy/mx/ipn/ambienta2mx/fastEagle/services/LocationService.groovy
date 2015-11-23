@@ -30,13 +30,13 @@ class LocationService {
                 if (json.results[-1].address_components[0].short_name == "MX") {
                     place.itrf_coordinates = coordinates
                     place.nad27_coordinates = coordinates
-                    place.location = [coordinates: coordinates, type: "Point"]
+                    place.location = [type: "Point", coordinates: coordinates]
                     place.sexagesimal_coordinates = [] // Just INEGI Sources contains this information
 
-                    place.zipCode = addressComponents.find { element -> "postal_code" in element.types }.long_name ?: ""
-                    place.state = addressComponents.find { element -> "administrative_area_level_1" in element.types }.long_name ?: ""
-                    place.city = addressComponents.find { element -> "administrative_area_level_3" in element.types }.long_name ?: ""
-                    place.town = addressComponents.find { element -> "sublocality" in element.types }.long_name ?: ""
+                    place.zipCode = addressComponents.find { element -> "postal_code" in element.types }?.long_name ?: ""
+                    place.state = addressComponents.find { element -> "administrative_area_level_1" in element.types }?.long_name ?: ""
+                    place.city = addressComponents.find { element -> "administrative_area_level_3" in element.types }?.long_name ?: ""
+                    place.town = addressComponents.find { element -> "sublocality" in element.types }?.long_name ?: ""
                     place.fullName = "$place.state, $place.city, $place.town"
                 }
             }
@@ -60,15 +60,15 @@ class LocationService {
                 List coordinates = [location.lng, location.lat]
                 def addressComponents = json.results[0].address_components
                 // Retrieving just information from Mexico
-                if (json.results[-1].address_components[0].short_name == "MX") {
+                if (json.results[-1].address_components[-1].short_name == "MX") {
                     place.itrf_coordinates = coordinates
                     place.nad27_coordinates = coordinates
-                    place.location = [coordinates: [coordinates], type: "Point"]
+                    place.location = [type: "Point", coordinates: coordinates]
                     place.sexagesimal_coordinates = [] // Just INEGI Sources contains this information
 
-                    place.zipCode = addressComponents.find { element -> "postal_code" in element.types }.long_name ?: ""
-                    place.state = addressComponents.find { element -> "administrative_area_level_1" in element.types }.long_name ?: ""
-                    place.city = addressComponents.find { element -> "administrative_area_level_3" in element.types }.long_name ?: ""
+                    place.zipCode = addressComponents.find { element -> "postal_code" in element.types }?.long_name ?: ""
+                    place.state = addressComponents.find { element -> "administrative_area_level_1" in element.types }?.long_name ?: ""
+                    place.city = addressComponents.find { element -> "administrative_area_level_3" in element.types }?.long_name ?: ""
                     place.town = addressComponents.find { element -> "sublocality" in element.types }.long_name ?: ""
                     place.fullName = "$place.state, $place.city, $place.town"
                 }
