@@ -12,6 +12,7 @@ class LocationService {
     def http
     def currentKey
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
+
     LocationService(String googleApiKey) {
         this.currentKey = googleApiKey
     }

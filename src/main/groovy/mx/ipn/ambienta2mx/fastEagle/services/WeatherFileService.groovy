@@ -37,7 +37,7 @@ class WeatherFileService {
         def connection = new URL("http://mapserver.inegi.org.mx/traninv/servicios/geo/itrf92/${decimalLongitude}/${decimalLatitude}")
         def jsonStructure = jsonSlurper.parseText(connection.text)[0].itrf92
 
-        [latitude: jsonStructure.y,
+        [latitude : jsonStructure.y,
          longitude: jsonStructure.x]
     }
 
