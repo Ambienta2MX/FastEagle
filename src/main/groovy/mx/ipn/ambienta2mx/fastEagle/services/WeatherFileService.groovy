@@ -57,7 +57,7 @@ class WeatherFileService {
     }
 
     def getUrlCoordinates(String fileUrl) {
-        def url = "http://smn.cna.gob.mx/emas/txt/BC05_10M.TXT"
+        def url = fileUrl
         def writer = url.toURL().filterLine { it ==~ /.*[0-9].*\".*/ }
         def latitude_longitude = writer.toString().replaceAll(/[^\d]/, " ")
         latitude_longitude = (latitude_longitude =~ /([0-9]+\s){3}/)
