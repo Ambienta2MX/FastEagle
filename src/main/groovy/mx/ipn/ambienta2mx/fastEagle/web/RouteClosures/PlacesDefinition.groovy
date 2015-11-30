@@ -7,7 +7,7 @@ import mx.ipn.ambienta2mx.fastEagle.services.WeatherFileService
 /**
  * Created by alberto on 11/10/15.
  */
-class RoutesDefinition {
+class PlacesDefinition {
     def definedConfiguration
     def container
     def eventBus
