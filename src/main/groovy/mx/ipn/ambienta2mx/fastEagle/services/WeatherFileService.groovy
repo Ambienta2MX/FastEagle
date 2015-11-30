@@ -48,6 +48,7 @@ class WeatherFileService {
             getFileUrlsForStation(stateCode).each { url ->
                 def urlInfo = getUrlCoordinates(url)
                 urlInfo.url = url
+                urlInfo.source = "CONAGUA"
 
                 countryFileUrls << urlInfo
             }

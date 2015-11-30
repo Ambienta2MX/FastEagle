@@ -48,7 +48,7 @@ class WeatherStationsDefinition {
             if (mongoResponse.body.results.size > 0) {
                 request.response.end('{"status": "inserted"}')
             } else {
-                StateCode.metaClass.static.values = { [StateCode.TL, StateCode.DF, StateCode.BC] } //Tlaxcala, DF
+                StateCode.metaClass.static.values = { [StateCode.TL, StateCode.DF, StateCode.BC] } //Tlaxcala, DF, BC
                 def countryUrls = weatherFileService.getFileUrlsOfCountry()
                 for (item in countryUrls) {
                     insertion.document = [
