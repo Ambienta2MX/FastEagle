@@ -6,6 +6,9 @@ import org.ccil.cowan.tagsoup.Parser
 
 class WeatherFileService {
 
+    final minLongitude = 85
+    final maxLongitude = 120
+
     def getFileUrlsForStation(StateCode stateCode) {
         def stationUrls = []
         //TODO: Externalize CONAGUA hostName
@@ -35,7 +38,7 @@ class WeatherFileService {
       def decimalLatitude = new BigDecimal(latitudeValues[0] + latitudeValues[1] / 60 + latitudeValues[2] / 3600).setScale(4, BigDecimal.ROUND_HALF_UP)
       def decimalLongitude = new BigDecimal(longitudeValues[0] + longitudeValues[1] / 60 + longitudeValues[2] / 3600).setScale(4, BigDecimal.ROUND_HALF_UP)
       def jsonStructure = [:]
-      if(decimalLongitude > 85 && decimalLongitude < 120){
+      if(decimalLongitude > minLongitude && decimalLongitude < maxLongitude){
         def connection = new URL("http://mapserver.inegi.org.mx/traninv/servicios/geo/itrf92/${decimalLongitude}/${decimalLatitude}")
         jsonStructure = jsonSlurper.parseText(connection.text)[0].itrf92
       }
