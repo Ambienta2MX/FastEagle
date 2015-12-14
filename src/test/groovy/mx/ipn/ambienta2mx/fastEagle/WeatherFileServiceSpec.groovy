@@ -20,8 +20,6 @@ class WeatherFileServiceSpec extends Specification{
   }
   
   Should "get the urls of the country"(){
-    given:
-      StateCode.metaClass.static.values = {[StateCode.BC,StateCode.DF]}
     when:
       def countryUrls = service.getFileUrlsOfCountry()
     then:
