@@ -29,40 +29,47 @@ class WeatherFileService {
     }
 
     def convertCoordinatesToDecimal(def degressLatitude, def degressLongitude) {
-        def jsonSlurper = new JsonSlurper()
-        def latitudeValues = degressLatitude.collect { new Float(it) }
-        def longitudeValues = degressLongitude.collect { new Float(it) }
-        def decimalLatitude = new BigDecimal(latitudeValues[0] + latitudeValues[1] / 60 + latitudeValues[2] / 3600).setScale(4, BigDecimal.ROUND_HALF_UP)
-        def decimalLongitude = new BigDecimal(longitudeValues[0] + longitudeValues[1] / 60 + longitudeValues[2] / 3600).setScale(4, BigDecimal.ROUND_HALF_UP)
+      def jsonSlurper = new JsonSlurper()
+      def latitudeValues = degressLatitude.collect { new Float(it) }
+      def longitudeValues = degressLongitude.collect { new Float(it) }
+      def decimalLatitude = new BigDecimal(latitudeValues[0] + latitudeValues[1] / 60 + latitudeValues[2] / 3600).setScale(4, BigDecimal.ROUND_HALF_UP)
+      def decimalLongitude = new BigDecimal(longitudeValues[0] + longitudeValues[1] / 60 + longitudeValues[2] / 3600).setScale(4, BigDecimal.ROUND_HALF_UP)
+      def jsonStructure = [:]
+      if(decimalLongitude > 85 && decimalLongitude < 120){
         def connection = new URL("http://mapserver.inegi.org.mx/traninv/servicios/geo/itrf92/${decimalLongitude}/${decimalLatitude}")
-        def jsonStructure = jsonSlurper.parseText(connection.text)[0].itrf92
+        jsonStructure = jsonSlurper.parseText(connection.text)[0].itrf92
+      }
 
-        [latitude : jsonStructure.y,
-         longitude: jsonStructure.x]
+      [latitude : jsonStructure?.y ?: 0,
+       longitude: jsonStructure?.x ?: 0]
     }
 
     def getFileUrlsOfCountry() {
-        def countryFileUrls = []
+      def countryFileUrls = []
 
-        StateCode.values().each { stateCode ->
-            getFileUrlsForStation(stateCode).each { url ->
-                def urlInfo = getUrlCoordinates(url)
-                urlInfo.url = url
-                urlInfo.source = "CONAGUA"
-
-                countryFileUrls << urlInfo
-            }
+      StateCode.values().each { stateCode ->
+        getFileUrlsForStation(stateCode).each { url ->
+          def urlInfo = getUrlCoordinates(url)
+          urlInfo.url = url
+          urlInfo.source = "CONAGUA"
+          countryFileUrls << urlInfo
         }
+      }
 
         countryFileUrls
     }
 
     def getUrlCoordinates(String fileUrl) {
-        def url = fileUrl
-        def writer = url.toURL().filterLine { it ==~ /.*[0-9].*\".*/ }
+      def url = fileUrl
+      try{
+        def writer = url.toURL().filterLine { it ==~  /.*[0-9].*[\"|''].*/ }
         def latitude_longitude = writer.toString().replaceAll(/[^\d]/, " ")
-        latitude_longitude = (latitude_longitude =~ /([0-9]+\s){3}/)
+        latitude_longitude = (latitude_longitude =~ /([0-9]+\s{1,2}){3}/)
         convertCoordinatesToDecimal(latitude_longitude[1][0].tokenize(), latitude_longitude[0][0].tokenize())
+      }
+      catch(FileNotFoundException ex){
+        [latitude : 0,longitude: 0]
+      }
     }
 
 }
